@@ -1,0 +1,12 @@
+{
+    "name": "Metrics",
+    "description": "The metrics project to monitor KPIs on repos",
+    "version": "0.0.1",
+    "dependencies": {},
+    "node-red": {
+        "settings": {
+            "flowFile": "metrics.json",
+            "credentialsFile": "metrics_cred.json"
+        }
+    }
+}
