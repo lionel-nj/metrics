@@ -1,4 +1,5 @@
 *.backup
+*data.json
 /.env
 # Dependency directories
 node_modules/
