@@ -3,3 +3,8 @@
 /.idea/.gitignore
 # Dependency directories
 node_modules/
+/.idea/google-java-format.xml
+/.idea/metrics.iml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/vcs.xml
