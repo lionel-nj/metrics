@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const { Octokit } = require("@octokit/rest");
+const {Octokit} = require("@octokit/rest");
 const GH_TOKEN = process.env.GH_TOKEN
 
 const octokit = new Octokit({
@@ -29,7 +29,7 @@ async function getAllPrMergeDatesCollection(repository) {
       toReturn.push(
           new Date(date.getFullYear(), date.getMonth(), date.getDate()))
     }
-    return toReturn
+    return toReturn.sort(asc_order)
   })
 }
 
@@ -45,7 +45,7 @@ async function getAllIssueCreationDateCollection(repository) {
       toReturn.push(
           new Date(date.getFullYear(), date.getMonth(), date.getDate()))
     }
-    return toReturn
+    return toReturn.sort(asc_order)
   })
 }
 
@@ -60,7 +60,7 @@ async function getAllIssueCommentForRepo(repository) {
       toReturn.push(
           new Date(date.getFullYear(), date.getMonth(), date.getDate()))
     }
-    return toReturn
+    return toReturn.sort(asc_order)
   })
 }
 
@@ -75,7 +75,7 @@ async function getAllPrCommentForRepo(repository) {
       toReturn.push(
           new Date(date.getFullYear(), date.getMonth(), date.getDate()))
     }
-    return toReturn
+    return toReturn.sort(asc_order)
   })
 }
 
