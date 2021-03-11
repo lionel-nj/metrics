@@ -1,2 +1,5 @@
 *.backup
 /.env
+/.idea/.gitignore
+# Dependency directories
+node_modules/
