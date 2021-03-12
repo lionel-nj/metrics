@@ -81,3 +81,30 @@ body {
 .bm-overlay {
   background: rgba(0, 0, 0, 0.3);
 }
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 0.5fr 1fr;
+  gap: 24px 0px;
+  grid-template-areas:
+    "top-left top-left top-right top-right"
+    "middle-left middle-left middle-right middle-right"
+    "bottom bottom bottom bottom";
+}
+
+.bottom { grid-area: bottom; }
+
+.top-left { grid-area: top-left; }
+
+.top-right { grid-area: top-right; }
+
+.middle-left { grid-area: middle-left; }
+
+.middle-right { grid-area: middle-right; }
+
+/* Change size on hover */
+#x:hover {
+  -webkit-transform: scale(2)
+; }
+
