@@ -9,16 +9,16 @@ export default props => {
         Home
       </a>
 
-      <a className="menu-item" href="/burgers">
-        Burgers
+      <a className="menu-item" href="/validator">
+        MobilityData/gtfs-validator
       </a>
 
-      <a className="menu-item" href="/pizzas">
-        Pizzas
+      <a className="menu-item" href="/gtfs">
+        google/transit
       </a>
 
-      <a className="menu-item" href="/desserts">
-        Desserts
+      <a className="menu-item" href="/gbfs">
+        NABSA/gbfs
       </a>
     </Menu>
   );

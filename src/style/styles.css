@@ -33,6 +33,11 @@ body {
   color: white;
 }
 
+/*vertical center menu items*/
+.bm-item {
+  color: white;
+}
+
 /* The rest copied directly from react-burger-menu docs */
 
 /* Position and sizing of burger button */
