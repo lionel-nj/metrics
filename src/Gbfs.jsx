@@ -1,22 +1,15 @@
-
 import React from "react";
 
 function Gbfs() {
   return (
       <div className="about">
-        <div class="container">
-          <div class="row align-items-center my-5">
-            <div class="col-lg-5">
-              <h1 class="font-weight-light"><a href="https://github.com/NABSA/gbfs">NABSA/gbfs</a></h1>
-              <p>
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy text
-                ever since the 1500s, when an unknown printer took a galley of
-                type and scrambled it to make a type specimen book.
-              </p>
-            </div>
-          </div>
-        </div>
+        <h1 class="font-weight-light"><a
+            href="https://github.com/NABSA/gbfs">NABSA/gbfs</a></h1>
+        <div className="top-left"></div>
+        <div className="top-right"></div>
+        <div className="middle"></div>
+        <div className="bottom-left"></div>
+        <div className="bottom-right"></div>
       </div>
   );
 }
