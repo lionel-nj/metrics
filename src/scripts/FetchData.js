@@ -1,9 +1,11 @@
 require('dotenv').config();
 const fs = require('fs');
+const shell = require('shelljs');
+
+const moment = require("moment");
 const {Octokit} = require("@octokit/rest");
-const GH_TOKEN = process.env.GH_TOKEN
 const octokit = new Octokit({
-  auth: GH_TOKEN,
+  auth: process.env.GH_TOKEN,
   baseUrl: 'https://api.github.com',
   log: {
     debug: () => {
@@ -14,9 +16,8 @@ const octokit = new Octokit({
     error: console.error
   },
 })
-const moment = require("moment");
 
-let asc_order = function (firstDate, otherDate) {
+let ascOrder = function (firstDate, otherDate) {
   if (firstDate > otherDate) {
     return 1
   }
@@ -39,7 +40,7 @@ async function getAllPrMergeDatesCollection(repository, owner) {
       toReturn.push(
           new Date(date.getFullYear(), date.getMonth(), date.getDate()))
     }
-    return toReturn.sort(asc_order)
+    return toReturn.sort(ascOrder)
   })
 }
 
@@ -56,7 +57,7 @@ async function getAllIssueCreationDateCollection(repository, owner) {
       toReturn.push(
           new Date(date.getFullYear(), date.getMonth(), date.getDate()))
     }
-    return toReturn.sort(asc_order)
+    return toReturn.sort(ascOrder)
   })
 }
 
@@ -72,7 +73,7 @@ async function getAllIssueCommentForRepo(repository, owner) {
       toReturn.push(
           new Date(date.getFullYear(), date.getMonth(), date.getDate()))
     }
-    return toReturn.sort(asc_order)
+    return toReturn.sort(ascOrder)
   })
 }
 
@@ -88,7 +89,7 @@ async function getAllPrCommentForRepo(repository, owner) {
       toReturn.push(
           new Date(date.getFullYear(), date.getMonth(), date.getDate()))
     }
-    return toReturn.sort(asc_order)
+    return toReturn.sort(ascOrder)
   })
 }
 
@@ -131,54 +132,65 @@ let repositories = [
   },
   {
     repo: "transit",
+    owner: "MobilityData",
+    direction: "https://github.com/MobilityData/transit"
+  },
+  {
+    repo: "transit",
     owner: "google",
     direction: "https://github.com/google/transit"
   },
   {
     repo: "gbfs",
     owner: "NABSA",
-    direction: "https://github.com/nabsa/gbfs",
-  }]
+    direction: "https://github.com/nabsa/gbfs"
+  }
+]
 
-for (let i in repositories) {
-  let repository = repositories[i]
-  let repo = repository.repo
-  let owner = repository.owner
+async function fetchData() {
+  for (let i in repositories) {
+    let repository = repositories[i]
+    let repo = repository.repo
+    let owner = repository.owner
 
-  getAllIssueCreationDateCollection(repo, owner)
-  .then(getDateCount)
-  .then(byQuarterYear)
-  .then(issueCreationData => {
-    fs.writeFileSync(`${repo}_issue_creation_data.json`,
-        JSON.stringify(issueCreationData))
-  }).catch(error => console.log(error))
+    shell.mkdir('-p', `data/${owner}/${repo}/`);
+    await getAllIssueCreationDateCollection(repo, owner)
+    .then(getDateCount)
+    .then(byQuarterYear)
+    .then(issueCreationData => {
+      fs.writeFileSync(`data/${owner}/${repo}/issue_creation_data.json`,
+          JSON.stringify(issueCreationData))
+    }).catch(error => console.log(error))
 
-  getAllPrMergeDatesCollection(repo, owner)
-  .then(getDateCount)
-  .then(byQuarterYear)
-  .then(issueCreationData => {
-    fs.writeFileSync(`${repo}_pr_merged_data.json`,
-        JSON.stringify(issueCreationData))
-  }).catch(error => console.log(error))
+    await getAllPrMergeDatesCollection(repo, owner)
+    .then(getDateCount)
+    .then(byQuarterYear)
+    .then(issueCreationData => {
+      fs.writeFileSync(`data/${owner}/${repo}/pr_merged_data.json`,
+          JSON.stringify(issueCreationData))
+    }).catch(error => console.log(error))
 
-  getAllIssueCommentForRepo(repo, owner)
-  .then(getDateCount)
-  .then(byQuarterYear)
-  .then(issueCreationData => {
-    fs.writeFileSync(`${repo}_issue_comments_data.json`,
-        JSON.stringify(issueCreationData))
-  }).catch(error => console.log(error))
+    await getAllIssueCommentForRepo(repo, owner)
+    .then(getDateCount)
+    .then(byQuarterYear)
+    .then(issueCreationData => {
+      fs.writeFileSync(`data/${owner}/${repo}/issue_comments_data.json`,
+          JSON.stringify(issueCreationData))
+    }).catch(error => console.log(error))
 
-  getAllPrCommentForRepo(repo, owner)
-  .then(getDateCount)
-  .then(byQuarterYear)
-  .then(issueCreationData => {
-    fs.writeFileSync(`${repo}_pr_comments_data.json`,
-        JSON.stringify(issueCreationData))
-  }).catch(error => console.log(error))
+    await getAllPrCommentForRepo(repo, owner)
+    .then(getDateCount)
+    .then(byQuarterYear)
+    .then(issueCreationData => {
+      fs.writeFileSync(`data/${owner}/${repo}/pr_comments_data.json`,
+          JSON.stringify(issueCreationData))
+    }).catch(error => console.log(error))
 
-  console.log(`🗄 Repository: ${repo}`)
-  console.log(`🏡 Owner: ${owner}`)
-  console.log(`🔗 Link: ${repository.direction}`)
-  console.log(`\n`)
+    console.log(`🗄 Repository: ${repo}`)
+    console.log(`🏡 Owner: ${owner}`)
+    console.log(`🔗 Link: ${repository.direction}`)
+    console.log(`\n`)
+  }
 }
+
+fetchData()
