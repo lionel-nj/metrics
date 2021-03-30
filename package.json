@@ -6,6 +6,7 @@
     "shelljs": "0.8.4"
   },
   "scripts": {
-    "fetchData": "node src/scripts/FetchData.js"
+    "fetch": "node src/scripts/FetchRawData.js",
+    "aggregate": "node src/scripts/AggregateData.js"
   }
 }
