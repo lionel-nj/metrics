@@ -2,7 +2,6 @@ require('dotenv').config();
 const fs = require('fs');
 const shell = require('shelljs');
 
-const moment = require("moment");
 const {Octokit} = require("@octokit/rest");
 const octokit = new Octokit({
   auth: process.env.GH_TOKEN,
@@ -93,37 +92,6 @@ async function getAllPrCommentForRepo(repository, owner) {
   })
 }
 
-function getDateCount(dateList) {
-  let toReturn = {}
-  for (let i in dateList) {
-    if (dateList[i] in toReturn) {
-      toReturn[dateList[i]] = toReturn[dateList[i]] + 1
-    } else {
-      toReturn[dateList[i]] = 1
-    }
-  }
-  return toReturn
-}
-
-function toQuarterYear(date) {
-  let quarter = moment(date.toUTCString()).quarter()
-  let year = date.getFullYear()
-  return `Q${quarter}-${year}`
-}
-
-async function byQuarterYear(dateCountDict) {
-  let toReturn = {}
-  for (var i in dateCountDict) {
-    if (toQuarterYear(new Date(i)) in toReturn) {
-      toReturn[toQuarterYear(new Date(i))] = toReturn[toQuarterYear(
-          new Date(i))] + dateCountDict[i]
-    } else {
-      toReturn[toQuarterYear(new Date(i))] = dateCountDict[i]
-    }
-  }
-  return toReturn
-}
-
 let repositories = [
   {
     repo: "gtfs-validator",
@@ -144,45 +112,43 @@ let repositories = [
     repo: "gbfs",
     owner: "NABSA",
     direction: "https://github.com/nabsa/gbfs"
+  },
+  {
+    repo: "gbfs",
+    owner: "MobilityData",
+    direction: "https://github.com/MobilityData/gbfs"
   }
 ]
 
-async function fetchData() {
+async function fetchRawData() {
+  console.log("Fetching raw data from Github ⏳ ")
   for (let i in repositories) {
     let repository = repositories[i]
     let repo = repository.repo
     let owner = repository.owner
 
-    shell.mkdir('-p', `data/${owner}/${repo}/`);
+    shell.mkdir('-p', `data/raw/${owner}/${repo}/`);
     await getAllIssueCreationDateCollection(repo, owner)
-    .then(getDateCount)
-    .then(byQuarterYear)
     .then(issueCreationData => {
-      fs.writeFileSync(`data/${owner}/${repo}/issue_creation_data.json`,
+      fs.writeFileSync(`data/raw/${owner}/${repo}/issue_creation.json`,
           JSON.stringify(issueCreationData))
     }).catch(error => console.log(error))
 
     await getAllPrMergeDatesCollection(repo, owner)
-    .then(getDateCount)
-    .then(byQuarterYear)
     .then(issueCreationData => {
-      fs.writeFileSync(`data/${owner}/${repo}/pr_merged_data.json`,
+      fs.writeFileSync(`data/raw/${owner}/${repo}/pr_merged.json`,
           JSON.stringify(issueCreationData))
     }).catch(error => console.log(error))
 
     await getAllIssueCommentForRepo(repo, owner)
-    .then(getDateCount)
-    .then(byQuarterYear)
     .then(issueCreationData => {
-      fs.writeFileSync(`data/${owner}/${repo}/issue_comments_data.json`,
+      fs.writeFileSync(`data/raw/${owner}/${repo}/issue_comments.json`,
           JSON.stringify(issueCreationData))
     }).catch(error => console.log(error))
 
     await getAllPrCommentForRepo(repo, owner)
-    .then(getDateCount)
-    .then(byQuarterYear)
     .then(issueCreationData => {
-      fs.writeFileSync(`data/${owner}/${repo}/pr_comments_data.json`,
+      fs.writeFileSync(`data/raw/${owner}/${repo}/pr_comments.json`,
           JSON.stringify(issueCreationData))
     }).catch(error => console.log(error))
 
@@ -193,4 +159,4 @@ async function fetchData() {
   }
 }
 
-fetchData()
+fetchRawData()
