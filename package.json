@@ -8,5 +8,8 @@
   "scripts": {
     "fetch": "node src/scripts/FetchRawData.js",
     "aggregate": "node src/scripts/AggregateData.js"
+  },
+  "devDependencies": {
+    "standard": "16.0.3"
   }
 }
