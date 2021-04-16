@@ -8,8 +8,11 @@ const ISSUE_CREATION_JSON = 'issue_creation.json'
 const PR_MERGED_JSON = 'pr_merged.json'
 const ISSUE_COMMENTS_JSON = 'issue_comments.json'
 const PR_COMMENTS_JSON = 'pr_comments.json'
+const OPEN_ISSUE_JSON = 'open_issues_count.json'
+const OPEN_PR_JSON = 'open_pulls_count.json'
 const DATA = 'data'
 const RAW = 'raw'
+const STATE_OPEN = 'open'
 
 const { Octokit } = require('@octokit/rest')
 const octokit = new Octokit({
@@ -32,6 +35,28 @@ const ascOrder = function (firstDate, otherDate) {
   if (firstDate < otherDate) {
     return -1
   }
+}
+
+async function getPullCountForRepo (repository, owner, state) {
+  return await octokit.paginate(octokit.issues.listForRepo, {
+    owner: owner,
+    repo: repository,
+    state: state,
+    per_page: 100
+  }).then(res => {
+    return res.filter(item => item.pull_request != null).length
+  })
+}
+
+async function getIssueCountForRepo (repository, owner, state) {
+    return await octokit.paginate(octokit.issues.listForRepo, {
+    owner: owner,
+    repo: repository,
+    state: state,
+    per_page: 100
+  }).then(res => {
+      return res.filter(item => item.pull_request == null).length
+  })
 }
 
 async function getAllPrMergeDatesCollection (repository, owner) {
@@ -159,6 +184,18 @@ async function fetchRawData () {
       .then(issueCreationData => {
         fs.writeFileSync(`${DATA}/${RAW}/${owner}/${repo}/${PR_COMMENTS_JSON}`,
           JSON.stringify(issueCreationData))
+      }).catch(error => console.log(error))
+
+    await getIssueCountForRepo(repo, owner, STATE_OPEN)
+      .then(openIssueCount => {
+        fs.writeFileSync(`${DATA}/${RAW}/${owner}/${repo}/${OPEN_ISSUE_JSON}`,
+          JSON.stringify(openIssueCount))
+      }).catch(error => console.log(error))
+
+    await getPullCountForRepo(repo, owner, STATE_OPEN)
+      .then(openPullCount => {
+        fs.writeFileSync(`${DATA}/${RAW}/${owner}/${repo}/${OPEN_PR_JSON}`,
+          JSON.stringify(openPullCount))
       }).catch(error => console.log(error))
 
     console.log(`🗄 Repository: ${repo}`)
