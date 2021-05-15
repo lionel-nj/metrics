@@ -47,7 +47,7 @@ function byQuarterYear (dateCountDict) {
   return toReturn
 }
 
-async function merge (repo, owner1, owner2) {
+export async function merge (repo, owner1, owner2) {
   console.log(`Merging data from ${owner1} and ${owner2} ⏳ `)
   shell.mkdir('-p', `${DATA}/${TMP}/${repo}/`)
   const mergedData = {}
@@ -146,7 +146,7 @@ function aggregateDataForMultipleOwner (repo, owner1, owner2) {
   fs.writeFileSync(`${DATA}/${AGGREGATED}/${repo}${JSON_EXTENSION}`, JSON.stringify(data))
 }
 
-function aggregate () {
+export function aggregate () {
   console.log('Aggregating data ⏳ ')
   shell.mkdir('-p', `${DATA}/${AGGREGATED}/`)
   const singleOwnerRepositories = [{
@@ -181,7 +181,7 @@ function aggregate () {
   }
 }
 
-function removeDirectories (dirs) {
+export function removeDirectories (dirs) {
   console.log('Removing temporary data files 🌬 ')
   for (const i in dirs) {
     const dir = dirs[i]
@@ -194,7 +194,7 @@ function removeDirectories (dirs) {
   }
 }
 
-merge('transit', 'google', 'MobilityData')
-merge('gbfs', 'NABSA', 'MobilityData')
-aggregate()
-removeDirectories([`${DATA}/${RAW}`, `${DATA}/${TMP}`])
+// merge('transit', 'google', 'MobilityData')
+// merge('gbfs', 'NABSA', 'MobilityData')
+// aggregate()
+// removeDirectories([`${DATA}/${RAW}`, `${DATA}/${TMP}`])

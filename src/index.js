@@ -8,10 +8,19 @@
  * @param {Object} res Cloud Function response context.
  *                     More info: https://expressjs.com/en/api.html#res
  */
-exports.fetchData = (req, res) => {
 
-  let message = JSON.parse(fs.readFileSync(`data/aggregated/gbfs.json`))
+import { fetchRawData } from './scripts/FetchRawData'
+import { aggregate, merge, removeDirectories } from './scripts/AggregateData'
 
+const DATA = 'data'
+const RAW = 'raw'
+const TMP = 'tmp'
 
-  res.send(message);
-};
+exports.helloWorld = (req, res) => {
+  fetchRawData().then(res.send('hello'))
+  merge('transit', 'google', 'MobilityData')
+  merge('gbfs', 'NABSA', 'MobilityData')
+  aggregate()
+  removeDirectories([`${DATA}/${RAW}`, `${DATA}/${TMP}`])
+  res.send("Hello world")
+}
