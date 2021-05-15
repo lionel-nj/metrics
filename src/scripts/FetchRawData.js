@@ -154,7 +154,7 @@ const repositories = [
   }
 ]
 
-async function fetchRawData () {
+export async function fetchRawData () {
   console.log('Fetching raw data from Github ⏳ ')
   for (const i in repositories) {
     const repository = repositories[i]
@@ -205,4 +205,3 @@ async function fetchRawData () {
   }
 }
 
-fetchRawData()
